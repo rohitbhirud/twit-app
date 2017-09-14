@@ -11,6 +11,8 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::middleware('auth')->group(function () {
+    Route::get('/', 'HomeController@index');
 });
+
+Route::get('/login', 'Auth\LoginController@login')->name('login');

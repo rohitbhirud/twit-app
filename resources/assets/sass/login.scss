@@ -1,0 +1,98 @@
+@import url('https://fonts.googleapis.com/css?family=Ubuntu');
+
+@import "variables";
+
+body {
+  font-family: 'Ubuntu', sans-serif;
+  margin: 0;
+  color: $dark;
+}
+
+a {
+  text-decoration: none;
+}
+
+.hero {
+    background-size: cover;
+    height: 100vh;
+    display: -webkit-box;
+    display: flex;
+    -webkit-box-pack: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    align-items: center;
+    text-align: center;
+    margin-top: -50px;
+
+    .logo {
+      h1 {
+          font-size: 50px;
+          margin-bottom: 0;
+      }
+
+      p {
+        font-size: 20px;
+      }
+
+      margin-bottom: 200px;
+    }
+}
+
+#particles-js canvas {
+  position: absolute;
+  z-index: -100;
+}
+
+.wrap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  height: 100px;
+  width: 200px;
+  margin: auto;
+}
+
+.button {
+  background-color: transparent;
+  border: 2px solid $teal;
+  display: inline-block;
+  color: $teal;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 600;
+  height: 40px;
+  line-height: 40px;
+  letter-spacing: 1px;
+  margin: 5px;
+  overflow: hidden;
+  padding: 10px 50px;
+  text-align: center;
+  text-transform: uppercase;
+  transition: all .2s ease-in-out;
+  margin-top: 50px;
+
+  &:hover {
+    background-color: $teal;
+  }
+}
+
+.roll-text {
+  display: block;
+  position: relative;
+  transition: all 420ms cubic-bezier(.175,.885,.32,1.275);
+
+
+}
+
+.roll-text:last-child {
+  color: #fff;
+  width: 45px;
+  height: 45px;
+  padding-left: 10px;
+}
+
+.rollover:hover .roll-text:first-child {
+  margin-top: -40px;
+}
