@@ -19,7 +19,7 @@
 			</div>
 			
 			<div class="wrap">
-			  <a class="button rollover" href="#">
+			  <a class="button rollover" href="{{ route('auth.redirect') }}">
 			    <span class="roll-text">Sign In</span>
 			    <span class="roll-text"><img src="/img/twitter.svg" alt="Twitter"></span>
 			  </a>

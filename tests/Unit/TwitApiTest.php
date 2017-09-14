@@ -13,7 +13,7 @@ class TwitApiTest extends TestCase
     /** @test */
     public function it_returns_tweets_from_home_timeline()
     {
-        $user = factory(User::class)->create();
+        $user = factory(User::class)->make();
 
         $this->actingAs($user, 'api');
 

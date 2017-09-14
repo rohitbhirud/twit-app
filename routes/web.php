@@ -11,8 +11,13 @@
 |
 */
 
-Route::middleware('auth')->group(function () {
-    Route::get('/', 'HomeController@index');
-});
-
 Route::get('/login', 'Auth\LoginController@login')->name('login');
+
+Route::get('/auth/redirect', 'Auth\LoginController@redirect')->name('auth.redirect');
+Route::get('/auth/callback', 'Auth\LoginController@handle')->name('auth.callback');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/', 'HomeController@index')->name('home');
+
+    Route::post('/logout', 'Auth\LoginController@logout')->name('logout');
+});

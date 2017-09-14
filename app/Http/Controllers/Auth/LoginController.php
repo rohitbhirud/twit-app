@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Repo\Facades\Twit;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
 class LoginController extends Controller
@@ -40,5 +41,17 @@ class LoginController extends Controller
     public function login()
     {
         return view('auth.login');
+    }
+
+    public function redirect()
+    {
+        return Twit::redirect();
+    }
+
+    public function handle()
+    {
+        Twit::handle();
+
+        return redirect()->route('home');
     }
 }
