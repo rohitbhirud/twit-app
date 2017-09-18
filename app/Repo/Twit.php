@@ -54,6 +54,15 @@ class Twit
         });
     }
 
+    public function followersIDs()
+    {
+        $uri  = 'followers/ids';
+
+        return Cache::remember('user:' . Auth::id() . ':' . $uri, 2, function () use ($uri) {
+            return $this->get($uri, ['count' => 5000]);
+        });
+    }
+
     public function get($uri, $params = [])
     {
         $connection = $this->getOAuthInstance();
