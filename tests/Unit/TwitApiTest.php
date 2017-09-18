@@ -5,6 +5,8 @@ namespace Tests\Unit;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use Twit;
+use Storage;
 
 class TwitApiTest extends TestCase
 {
@@ -13,14 +15,9 @@ class TwitApiTest extends TestCase
     /** @test */
     public function it_returns_tweets_from_home_timeline()
     {
-        $user = factory(User::class)->make();
+        $response = Storage::get('responses/home_timeline.txt');
 
-        $this->actingAs($user, 'api');
-
-        $response = $this->json('get', '/api/tweets/home');
-            
-        $response->assertStatus(200)
-                 ->assertSeeText('users')
-                 ->assertDontSeeText('errors');
+        Twit::shouldReceive('home')
+            ->andReturn($response);
     }
 }

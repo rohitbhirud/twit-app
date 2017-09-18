@@ -3,19 +3,22 @@
 namespace App\Repo;
 
 use Abraham\TwitterOAuth\TwitterOAuth;
-use App\User;
 use Illuminate\Http\Request;
+use App\User;
+use Cache;
+use Auth;
 
 /**
 * Twitter Api Client
 */
 class Twit
 {
+    use TwitOAuth;
+
     /**
      * @var string
      */
     private $endpoint = "https://api.twitter.com/1.1/";
-
 
     /**
     * @var string
@@ -44,85 +47,50 @@ class Twit
 
     public function home()
     {
-        return ['users'];
+        $uri = 'statuses/home_timeline';
+
+        return Cache::remember('user:' . Auth::id() . ':' . $uri, 100, function () use ($uri) {
+            return $this->get($uri, ['count' => 11]);
+        });
     }
 
-    public function redirect()
+    public function get($uri, $params = [])
     {
-        $connection = new TwitterOAuth($this->consumer_key, $this->consumer_secret);
+        $connection = $this->getOAuthInstance();
 
-        // Get temporary request oauth token & secret
-        $request_token = $connection->oauth(
-                                        'oauth/request_token',
-                                        ['oauth_callback' =>  route('auth.callback') ]
-        );
-
-        // Save temporary request token $ secret into session
-        session([
-            'oauth_token' => $request_token['oauth_token'],
-            'oauth_token_secret' => $request_token['oauth_token_secret']
-        ]);
-
-
-        // Generating Twitter Auth redirect url
-        $url = $connection->url(
-                        'oauth/authorize',
-                        ['oauth_token' => $request_token['oauth_token']]
-        );
-
-        return redirect($url);
+        return $connection->get($uri, $params);
     }
-
-    public function handle()
+    
+    private function saveUserProfile()
     {
-        $request = [];
-        $request_token['oauth_token'] = session('oauth_token');
-        $request_token['oauth_token_secret'] = session('oauth_token_secret');
+        $userInfo = $this->get('account/verify_credentials');
 
-        // Check if temporary oauth token exist & match new oauth token
-        if (request()->session()->exists('oauth_token') &&
-            $request_token['oauth_token'] !== request('oauth_token')) {
-            throw new \Exception("Invalid Authorization Token");
+        $user = Auth::user();
+
+        if (isset($user->name)) {
+            return;
         }
 
-        $connection = new TwitterOAuth(
-                                $this->consumer_key,
-                                $this->consumer_secret,
-                                $request_token['oauth_token'],
-                                $request_token['oauth_token_secret']
-                            );
-
-        // Get permanent access token & secret
-        $access_token = $connection->oauth(
-                            "oauth/access_token",
-                            ["oauth_verifier" => request('oauth_verifier')]
-        );
-
-        \Cache::forever($access_token['user_id'] . ':access_token', $access_token);
-
-        $user = User::firstOrNew([
-                'twitter_id' => $access_token['user_id'],
-                'nickname' => $access_token['screen_name']
-            ]);
-
-        $user->oauth_token = $access_token['oauth_token'];
-        $user->oauth_token_secret = $access_token['oauth_token_secret'];
+        $user->name = $userInfo->name;
+        $user->avatar = $userInfo->profile_image_url_https;
         $user->save();
 
-        \Auth::login($user);
+        Cache::forever("user:$user->id:info", $userInfo);
     }
 
-    public function initKeys()
+    private function initKeys()
     {
         $this->consumer_key = config('twit.consumer_key');
         $this->consumer_secret = config('twit.consumer_secret');
         $this->access_token = config('twit.access_token');
         $this->access_token_secret = config('twit.access_token_secret');
 
-        if (!isset($this->consumer_key,
-                   $this->consumer_secret,
-                   $this->access_token,
-                   $this->access_token_secret)) {
+        if (!isset(
+            $this->consumer_key,
+            $this->consumer_secret,
+            $this->access_token,
+            $this->access_token_secret
+        )) {
             throw new \Exception("Invalid / Undefined Consumer or Access Keys");
         }
     }
