@@ -4,12 +4,16 @@
 
 <div class="container">
 
-    <h1>A Simple Twitter Client</h1>
+	<div class="row">
+		<div class="col-md-8">
+			<tweets></tweets>
+		</div>
 
-    <form action="{{ route('logout') }}" method="POST">
-    	{{ csrf_field() }}
-    	<button class="nav-link" type="submit">Logout</button>
-  	</form>
+		<div class="col-md-4">
+			<followers></followers>
+		</div>
+		
+	</div>
 
 </div>
 

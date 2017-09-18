@@ -1,7 +1,11 @@
 @include('layouts.header')
 
-@include('layouts.navbar')
+<div id="app">
 	
-@yield('content')
+	@include('layouts.navbar')
+		
+	@yield('content')
 
-@include('layouts.footer')
+</div>
+
+	@include('layouts.footer')
