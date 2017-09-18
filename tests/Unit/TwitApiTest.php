@@ -29,4 +29,14 @@ class TwitApiTest extends TestCase
         Twit::shouldReceive('followersIDs')
             ->andReturn($response);
     }
+
+    /** @test */
+    public function it_returns_users_from_array_of_user_ids()
+    {
+        $response = Storage::get('responses/users_lookup.txt');
+
+        Twit::shouldReceive('usersLookup')
+            ->with(['779223031264620545,2741599502,1229124054,709571305167659008,4631662639'])
+            ->andReturn($response);
+    }
 }

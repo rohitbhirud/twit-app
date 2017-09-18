@@ -63,6 +63,16 @@ class Twit
         });
     }
 
+    public function usersLookup($ids)
+    {
+        $uri = 'users/lookup';
+        $idStr = implode(',', $ids);
+
+        return Cache::remember('user:' . Auth::id() . ':' . $uri, 2, function () use ($uri) {
+            return $this->get($uri, ['user_id' => $idStr]);
+        });
+    }
+
     public function get($uri, $params = [])
     {
         $connection = $this->getOAuthInstance();
