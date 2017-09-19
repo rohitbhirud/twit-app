@@ -15,6 +15,8 @@ window.Vue = require('vue');
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
+window.Event = new Vue();
+
 Vue.component('tweets', require('./components/Tweets.vue'));
 Vue.component('followers', require('./components/Followers.vue'));
 

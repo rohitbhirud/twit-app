@@ -27,6 +27,17 @@
         },
 
         created() {
+
+            Event.$on('updateUserTweets', (id) => {
+                axios.get('/api/tweets/users/' + id)
+                    .then((response) => {
+                        this.tweets = response.data;
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    })
+            });
+
             axios.get('/api/tweets/home')
                 .then((response) => {
                     this.tweets = response.data;

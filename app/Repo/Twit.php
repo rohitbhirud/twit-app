@@ -54,6 +54,15 @@ class Twit
         });
     }
 
+    public function userTweets($id)
+    {
+        $uri = 'statuses/user_timeline';
+
+        return Cache::remember('user:' . $id . ':' . $uri, 1, function () use ($uri, $id) {
+            return $this->get($uri, ['user_id' => $id]);
+        });
+    }
+
     public function followers()
     {
         $followers = $this->generateFollowers();

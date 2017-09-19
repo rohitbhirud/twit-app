@@ -134,6 +134,8 @@ window.Vue = __webpack_require__(8);
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
+window.Event = new Vue();
+
 Vue.component('tweets', __webpack_require__(33));
 Vue.component('followers', __webpack_require__(36));
 
@@ -281,6 +283,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     created: function created() {
         var _this = this;
 
+        Event.$on('updateUserTweets', function (id) {
+            axios.get('/api/tweets/users/' + id).then(function (response) {
+                _this.tweets = response.data;
+            }).catch(function (error) {
+                console.log(error);
+            });
+        });
+
         axios.get('/api/tweets/home').then(function (response) {
             _this.tweets = response.data;
             console.log(_this.tweets);
@@ -408,6 +418,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         }
     },
 
+    methods: {
+        updateUserTweets: function updateUserTweets(id) {
+            Event.$emit('updateUserTweets', id);
+        }
+    },
+
     created: function created() {
         var _this2 = this;
 
@@ -450,7 +466,16 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, _vm._l((_vm.filteredFollowers), function(follower) {
     return _c('li', {
       staticClass: "list-group-item"
-    }, [_vm._v("\n\t\t\t" + _vm._s(follower.name) + "\n\t\t")])
+    }, [_c('a', {
+      attrs: {
+        "href": "#"
+      },
+      on: {
+        "click": function($event) {
+          _vm.updateUserTweets(follower.id)
+        }
+      }
+    }, [_vm._v(_vm._s(follower.name))])])
   }))])
 },staticRenderFns: []}
 module.exports.render._withStripped = true

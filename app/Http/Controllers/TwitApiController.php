@@ -16,4 +16,9 @@ class TwitApiController extends Controller
     {
         return Twit::followers();
     }
+
+    public function userTweets($id)
+    {
+        return Twit::userTweets($id);
+    }
 }

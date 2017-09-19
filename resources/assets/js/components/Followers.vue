@@ -4,7 +4,7 @@
 
     	<ul class="list-group">
     		<li class="list-group-item" v-for="follower in filteredFollowers">
-    			{{ follower.name }}
+    			<a href="#" @click="updateUserTweets(follower.id)">{{ follower.name }}</a>
     		</li>
     	</ul>
 
@@ -26,6 +26,12 @@
                 return this.followers.filter(follower => {
                     return follower.name.toLowerCase().indexOf(this.search.toLowerCase()) > -1
                 })
+            }
+        },
+
+        methods: {
+            updateUserTweets(id) {
+                Event.$emit('updateUserTweets', id);
             }
         },
 
