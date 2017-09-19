@@ -271,31 +271,47 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
 
     data: function data() {
         return {
+            userHomeButton: false,
             tweets: []
         };
     },
 
-    created: function created() {
-        var _this = this;
+    methods: {
+        usersHomeTimeline: function usersHomeTimeline() {
+            var _this = this;
 
-        Event.$on('updateUserTweets', function (id) {
-            axios.get('/api/tweets/users/' + id).then(function (response) {
+            axios.get('/api/tweets/home').then(function (response) {
+                _this.tweets = [];
                 _this.tweets = response.data;
+                _this.userHomeButton = false;
+                console.log(_this.tweets);
             }).catch(function (error) {
                 console.log(error);
             });
-        });
+        }
+    },
 
-        axios.get('/api/tweets/home').then(function (response) {
-            _this.tweets = response.data;
-            console.log(_this.tweets);
-        }).catch(function (error) {
-            console.log(error);
+    created: function created() {
+        var _this2 = this;
+
+        this.usersHomeTimeline();
+
+        Event.$on('updateUserTweets', function (id) {
+            axios.get('/api/tweets/users/' + id).then(function (response) {
+                _this2.tweets = [];
+                _this2.tweets = response.data;
+                _this2.userHomeButton = true;
+            }).catch(function (error) {
+                console.log(error);
+            });
         });
     }
 });
@@ -305,7 +321,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
+  return _c('div', [(_vm.userHomeButton) ? _c('button', {
+    on: {
+      "click": _vm.usersHomeTimeline
+    }
+  }, [_vm._v("My Timeline")]) : _vm._e(), _vm._v(" "), _c('div', {
     staticClass: "row"
   }, _vm._l((_vm.tweets), function(tweet) {
     return _c('div', {
@@ -323,7 +343,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }, [_vm._v("@" + _vm._s(tweet.user.screen_name))]), _vm._v(" "), _c('p', {
       staticClass: "card-text"
     }, [_vm._v(_vm._s(tweet.text))])]), _vm._v(" "), _vm._m(0, true)])])])
-  }))
+  }))])
 },staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', {
     staticClass: "card-footer"
