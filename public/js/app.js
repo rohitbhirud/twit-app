@@ -386,10 +386,36 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    mounted: function mounted() {
-        console.log('Component mounted.');
+
+    data: function data() {
+        return {
+            search: '',
+            followers: []
+        };
+    },
+
+    computed: {
+        filteredFollowers: function filteredFollowers() {
+            var _this = this;
+
+            return this.followers.filter(function (follower) {
+                return follower.name.toLowerCase().indexOf(_this.search.toLowerCase()) > -1;
+            });
+        }
+    },
+
+    created: function created() {
+        var _this2 = this;
+
+        axios.get('/api/followers').then(function (response) {
+            _this2.followers = response.data.slice(0, 10);
+        }).catch(function (error) {
+            console.log(error);
+        });
     }
 });
 
@@ -398,20 +424,35 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _vm._m(0)
-},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('ul', {
+  return _c('div', [_c('input', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.search),
+      expression: "search"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      "name": "search",
+      "placeholder": "search..."
+    },
+    domProps: {
+      "value": (_vm.search)
+    },
+    on: {
+      "input": function($event) {
+        if ($event.target.composing) { return; }
+        _vm.search = $event.target.value
+      }
+    }
+  }), _vm._v(" "), _c('ul', {
     staticClass: "list-group"
-  }, [_c('li', {
-    staticClass: "list-group-item"
-  }, [_vm._v("Follower")]), _vm._v(" "), _c('li', {
-    staticClass: "list-group-item"
-  }, [_vm._v("Follower")]), _vm._v(" "), _c('li', {
-    staticClass: "list-group-item"
-  }, [_vm._v("Follower")]), _vm._v(" "), _c('li', {
-    staticClass: "list-group-item"
-  }, [_vm._v("Follower")])])
-}]}
+  }, _vm._l((_vm.filteredFollowers), function(follower) {
+    return _c('li', {
+      staticClass: "list-group-item"
+    }, [_vm._v("\n\t\t\t" + _vm._s(follower.name) + "\n\t\t")])
+  }))])
+},staticRenderFns: []}
 module.exports.render._withStripped = true
 if (false) {
   module.hot.accept()

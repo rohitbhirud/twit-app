@@ -15,4 +15,5 @@ use Illuminate\Http\Request;
 
 Route::middleware('auth:api')->group(function () {
     Route::get('/tweets/home', 'TwitApiController@home');
+    Route::get('/followers', 'TwitApiController@followers');
 });

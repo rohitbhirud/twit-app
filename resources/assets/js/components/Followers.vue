@@ -1,18 +1,42 @@
 <template>
+    <div>
+        <input class="form-control" name="search" v-model="search" placeholder="search..." />
 
-	<ul class="list-group">
-		<li class="list-group-item">Follower</li>
-		<li class="list-group-item">Follower</li>
-		<li class="list-group-item">Follower</li>
-		<li class="list-group-item">Follower</li>
-	</ul>
-    
+    	<ul class="list-group">
+    		<li class="list-group-item" v-for="follower in filteredFollowers">
+    			{{ follower.name }}
+    		</li>
+    	</ul>
+
+    </div>
 </template>
 
 <script>
     export default {
-        mounted() {
-            console.log('Component mounted.')
+
+        data: function () {
+            return {
+                search: '',
+                followers: []
+            }
+        },
+
+        computed: {
+            filteredFollowers() {
+                return this.followers.filter(follower => {
+                    return follower.name.toLowerCase().indexOf(this.search.toLowerCase()) > -1
+                })
+            }
+        },
+
+        created() {
+            axios.get('/api/followers')
+                .then((response) => {
+                    this.followers = response.data.slice(0, 10);
+                })
+                .catch((error) => {
+                    console.log(error);
+                })
         }
     }
 </script>

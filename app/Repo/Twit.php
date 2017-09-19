@@ -54,11 +54,33 @@ class Twit
         });
     }
 
+    public function followers()
+    {
+        $followers = $this->generateFollowers();
+
+        return Cache::remember('user:' . Auth::id() . ':followers', 1, function () use ($followers) {
+            return $followers;
+        });
+    }
+
+    private function generateFollowers()
+    {
+        $followers_ids = $this->followersIDs();
+
+        $ids = array_chunk($followers_ids->ids, 100);
+
+        $users = array_map(function ($idArray) {
+            return $this->usersLookup($idArray);
+        }, $ids);
+
+        return $users[0];
+    }
+
     public function followersIDs()
     {
         $uri  = 'followers/ids';
 
-        return Cache::remember('user:' . Auth::id() . ':' . $uri, 2, function () use ($uri) {
+        return Cache::remember('user:' . Auth::id() . ':' . $uri, 5, function () use ($uri) {
             return $this->get($uri, ['count' => 5000]);
         });
     }
@@ -66,9 +88,10 @@ class Twit
     public function usersLookup($ids)
     {
         $uri = 'users/lookup';
+
         $idStr = implode(',', $ids);
 
-        return Cache::remember('user:' . Auth::id() . ':' . $uri, 2, function () use ($uri) {
+        return Cache::remember('user:' . Auth::id() . ':' . $uri, 15, function () use ($uri, $idStr) {
             return $this->get($uri, ['user_id' => $idStr]);
         });
     }

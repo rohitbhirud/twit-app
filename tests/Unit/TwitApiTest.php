@@ -39,4 +39,13 @@ class TwitApiTest extends TestCase
             ->with(['779223031264620545,2741599502,1229124054,709571305167659008,4631662639'])
             ->andReturn($response);
     }
+
+    /** @test */
+    public function it_returns_followers_list()
+    {
+        $response = Storage::get('responses/followers.txt');
+
+        Twit::shouldReceive('followers')
+            ->andReturn($response);
+    }
 }

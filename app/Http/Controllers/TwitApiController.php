@@ -11,4 +11,9 @@ class TwitApiController extends Controller
     {
         return Twit::home();
     }
+
+    public function followers()
+    {
+        return Twit::followers();
+    }
 }
